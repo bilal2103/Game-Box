@@ -1,0 +1,1778 @@
+Include Irvine32.inc
+
+Check_ladder_or_snake PROTO, Player_pointer:PTR DWORD
+Player_position PROTO, Player_pointer:DWORD
+
+.Data
+	ladder_Board byte "  ",0dh,0ah
+				 Byte " **********************************************       SNAKES & LADDER       *******************************************",0dh,0ah,0dh,0ah
+				 Byte "                                                        ____________________________________________________________",0dh,0ah
+				 Byte "                                                        |48      ||47      ||46      ||45      ||44      ||43      |",0dh,0ah
+				 Byte " Player1 Points:                                        |        ||        ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |        ||        ||        ||        ||        ||  (!)   |",0dh,0ah
+				 Byte " Player2 Points:                                        |________||________||______\-\_________||_______*_*_*_*____|",0dh,0ah
+				 Byte "                                                        |37      ||38      ||39     \-\40      ||41     *||42      |",0dh,0ah
+				 Byte "                                                        |        ||        ||        \-\       ||       *||        |",0dh,0ah
+				 Byte "                                                        |        ||        ||         \-\      ||       *||        |",0dh,0ah
+				 Byte "                                                        |________||________||________||\-\_____||____*_*_||________|",0dh,0ah
+				 Byte "                                                        |36      ||35      ||34      |33\-\    ||32  X   ||31      |",0dh,0ah
+				 Byte "                                                        |        ||        ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |        ||  (!)   ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |________||___*____||________||________||________||________|",0dh,0ah
+				 Byte "                                                        |25      ||26 * * *||27      ||28      ||29      ||30      |",0dh,0ah
+				 Byte "                                                        |        ||       *||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |        ||       *||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |________||_______*||________||________||________||________|",0dh,0ah
+				 Byte "                                                        |24      ||23     *||22      ||21      ||20      ||19      |",0dh,0ah
+				 Byte "                                                        |        ||       *||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |        ||       * * X      ||         /-/      ||        |",0dh,0ah
+				 Byte "                                                        |________||________||________||________/-/_______||________|",0dh,0ah
+				 Byte "                                                        |13      ||14      ||15      ||16     /-/17      ||18      |",0dh,0ah
+				 Byte "                                                        |        ||        ||        ||      /-/         ||        |",0dh,0ah
+				 Byte "                                                        |        ||        ||        ||     /-/||        ||        |",0dh,0ah
+				 Byte "                                                        |________||________||________||____/-/_||________||________|",0dh,0ah
+				 Byte "                                                        |12      ||11      ||10      ||09 /-/  ||08      ||07      |",0dh,0ah
+				 Byte "                                                        |        ||        ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |  (!)   ||        ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |___*____||________||________||________||________||________|",0dh,0ah
+				 Byte "                                                        |01 * * *||02      ||03      ||04      ||05      ||06      |",0dh,0ah
+				 Byte "                                                        |       *||        ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |       * * X      ||        ||        ||        ||        |",0dh,0ah
+				 Byte "                                                        |________||________||________||________||________||________|",0
+	
+	Player1 DWORD 1
+	P1 BYTE "P1",0
+	P1_win BYTE "*** Congratulation Player 1 you win! ***",0
+	P1_turn BYTE "Player 1, Press '1' to roll dice . . . ",0
+
+	Player2 DWORD 1
+	P2 Byte "P2",0
+	P2_win BYTE "*** Congratulation Player 2 you win! ***",0
+	P2_turn BYTE "Player 2, Press '0' to roll dice . . . ",0
+	
+	Step BYTE "Points : ",0
+	Exact_steps BYTE "You need exact steps to win the game. ",0
+	System_Pause BYTE "Press any key to continue . . .",0
+	Move BYTE "Press 'm' to move . . .",0
+	Snake BYTE "Oops, You found a snake.Press any key to run back...",0
+	Ladder BYTE "Yepiii! You found a ladder.Press any key to Climb...",0
+
+	msg1 byte "Tic Tac Toe Game",0
+	msg2 byte "Player 1 (X)  -  Player 2 (O)",0
+	msg3 byte "Player ",0
+	msg4 byte "...Enter a number.... : ",0
+	prompt1 byte "Invalid move...!",0
+	prompt2 byte " is Winner...!",0
+	prompt3 byte "Game Draw...!",0
+	Space byte "                                              ",0
+	player dword 1
+	mark dword ?
+	choice dword ?
+	A dword 'X'
+	B dword 'O'
+	check sdword ?
+	square dword 49,50,51,52,53,54,55,56,57
+	square2 dword 49,50,51,52,53,54,55,56,57
+	line1 byte "|  ",0
+	line2 byte "|___|___|___|",0
+	line3 byte "_____________",0
+	X byte 0
+	Y byte 0
+
+	
+	Titlee			byte   "~~~~  H A N G M A N  ~~~~",0
+	win				byte   "Congrats You find the Correct Word, Good Job." , 0ah, 0dh, 0
+	correctword		byte   "Correct Word Was : ",0
+	gameover		byte   "Unfortunatly you are failed to find the word, Better luck next time xD" , 0ah, 0dh, 0
+	PlayAgain		byte   "Do You Want To Play Again ?",0
+	AtLast			byte   "You Need to Build Your Gernal Knowledge .",0
+	AtLast1			byte   "You Play like a Pro , Great Gernal Knowledge Bro.",0
+	AtLast2			byte   "You are an Average Player ",0
+	loadingg		byte   "**************** Loading Hangman ****************",0
+	hintword		byte   "HINT : ",0
+	wordword		byte   "WORD : ",0
+	messagelives	byte   "Lives : ",0
+	usedAlphabets	byte   "Used Letters: ",0
+	currentPoints	byte   "	Points Earn In This Round : ",0
+	Scoree			byte   "	Total Score : ",0
+	doneNum			dword  15 dup(0)
+	TotalScore		dword  0
+	done			byte  15 dup (0)
+	repeatedEntries byte  20 dup (0),0
+	tempword		byte  20 dup (0)
+	tempwordd		byte  20 dup (0)
+	temphint		byte  100 dup (0)
+	temparr			Byte  20 DUP (0)
+	wordlength		byte  0
+	count			byte  0
+	lives			byte  5
+	flag			byte  0
+		       		 	
+message byte            1, "VOIP service owned by Facebook",                 0
+		byte            2, "Worlds fastest car of 2019",                     0
+		byte            3,"Owner of Instagram",                              0
+		byte            4, "Richest Country of 2019",                        0
+		byte            5, "Best football player of 2019",                   0
+		byte            6, "Abbreviated as WIFI",                            0
+		byte            7, "CEO of Google",                                  0
+		byte            8, "Founder of Amazon",                              0
+		byte            9, "CEO of TESLA and Chief engineer of SpaceX",      0
+		byte           10, "Most polluted city of 2019",                     0
+		byte           11, "Antonym of 'Wonderful'",                         0
+		byte           12, "Synonym of 'Lovely'",                            0
+		byte           13, "Worlds Second tallest building",                 0
+		byte           14, "Tallest Mountain in world",                      0
+		byte           15, "Least populated country in the world",           0
+
+Answers byte            1, "WHATSAPP",										 0
+		byte            2, "BUGATTICHIRON",									 0
+		byte            3, "MARKZUCKERBERG",								 0
+		byte            4, "QATAR",											 0 
+		byte            5, "LIONELMESSI",									 0
+		byte            6, "WIRELESSFIDELITY",								 0
+		byte            7, "SUNDARPICHAI",									 0     
+		byte            8, "JEFFBEZOS",										 0
+		byte            9, "ELONREEVEMUSK",									 0
+		byte           10, "KANPUR",										 0
+		byte           11, "AWFUL",											 0
+		byte           12, "GORGEOUS",										 0
+		byte           13, "SHANGHAITOWER",									 0
+		byte           14, "MOUNTEVEREST",									 0
+        byte           15, "VATICANCITY",									 0
+
+ 
+ 
+live5 byte		"      ___________							",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "  ____|____								",0
+
+
+live4 byte		"      ___________							",0ah,0dh
+	  byte      "      |      ___|___						",0ah,0dh
+	  byte      "      |      | * * |						",0ah,0dh
+	  byte      "      |      |_---_|						",0ah,0dh
+	  byte  	"      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "      |									",0ah,0dh
+	  byte      "  ____|____								",0
+				
+				
+live3 byte		"      ___________							",0ah,0dh
+	  byte	    "      |      ___|___   _________			",0ah,0dh
+	  byte	    "      |      | * * |  / Help   /			",0ah,0dh
+	  byte	    "      |      |_---_|_/___ME!__/			",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte		"      |         |							",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte	    "      |									",0ah,0dh
+	  byte	    "  ____|____								",0
+				
+				
+live2 byte		"      ___________							",0ah,0dh
+	  byte	    "      |      ___|___   _______________     ",0ah,0dh
+	  byte	    "      |      | * * |  / Huh! I can't /     ",0ah,0dh    
+	  byte	    "      |      |_---_|_/____breath____/      ",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte		"      |         |__|						",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte	    "      |         |							",0ah,0dh
+	  byte	    "  ____|____								",0
+
+
+
+live1 byte		"      ___________							",0ah,0dh
+	  byte      "      |      ___|___   ______________      ",0ah,0dh
+	  byte      "      |      | * * |  /   I can't    /     ",0ah,0dh     
+	  byte      "      |      |_---_|_/_hold_anymore_/      ",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte 		"      |      |__|__|						",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte      "  ____|____								",0
+
+
+
+live0 byte		"      ___________							",0ah,0dh
+	  byte      "      |      ___|___						",0ah,0dh
+	  byte      "      |      | * * |  ________				",0ah,0dh
+	  byte      "      |      |_---_|_/_ :(  _/				",0ah,0dh
+	  byte      "      |         |			  LIVES = 0		",0ah,0dh
+	  byte      "      |      |__|__|						",0ah,0dh
+	  byte      "      |         |							",0ah,0dh
+	  byte      "      |       __|__						",0ah,0dh
+	  byte      "      |       |   |						",0ah,0dh
+	  byte      "  ____|____								",0
+
+	  MenuChoice BYTE "  ",0ah,0dh
+				 BYTE " 1) Snakes & Ladder ",0ah,0dh
+				 BYTE " 2) Tic Tac Toe  ",0ah,0dh
+				 BYTE " 3) Hangman  ",0ah,0dh   
+				 BYTE " 4) Exit ",0ah,0dh,0ah,0dh
+				 BYTE " Select one the following : ",0
+
+
+.Code
+Main Proc
+	Gameplay:
+		mov eax, White+(Black*16)
+		call settextcolor 
+		Call Clrscr
+		Mov Edx, OFFSET MenuChoice
+		Call WriteString
+
+	_Choice_:
+		CALL ReadChar
+
+		CMP Eax, 561
+		JE L1
+
+		CMP Eax, 818
+		JE L2
+
+		CMP Eax, 1075
+		JE L3
+
+		CMP Eax, 1332
+		JE L4
+	JMP _Choice_
+	
+	L1:
+		mov eax, 19+(5*12)
+		call settextcolor 
+		Call Clrscr
+		Call Snakes_and_ladder
+		JMP Gameplay
+
+	L2:
+		mov eax, lightcyan + (black * 16)
+		call settextcolor
+		call TICTACTOE
+		Call Readchar
+		JMP Gameplay
+
+	L3:
+		Call Hangman_Game
+		JMP Gameplay
+
+	L4:
+		Exit
+
+Main Endp
+
+;******************************* Main Function of snakes and ladder game *******************************
+Snakes_and_ladder PROC
+	Call ladder_printer			; Printing Ladder
+
+	Mov DH, 15
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET P1_turn		
+	Call WriteString			; Prints P1_turn statment
+
+	Mov Eax, 0
+	L1:
+		Call ReadChar
+		CMP AX, 231h
+		JE L2
+	Loop L1						; iterates until 1 is pressed
+
+	L2: Call Random_number		; Returns Random Number(steps)
+
+	Mov DH, 16
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET Step		
+	Call WriteString			
+	Call WriteDec				; Prints Step statment
+
+	Add Player1, Eax			; Adding steps in player1
+	Mov Ebx, Eax				; Saving for further use
+
+	CMP Player1, 48
+	JA L3
+	JE L4
+	JB L5
+
+	L3:							; If steps are more then winning score(48)
+		Mov DH, 19
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET Exact_steps		
+		Call WriteString		; Prints Exact_steps statment
+		Sub Player1, Ebx
+
+		Mov DH, 20
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET System_Pause		
+		Call WriteString		; Prints Pause statment
+		Call ReadChar
+		JMP L6					
+
+	L4:
+		Call m_press
+		Call Ladder_printer
+		Mov DH, 19
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET P1_win		
+		Call WriteString		; Prints P1_win statment
+		Call ReadChar
+		JMP Winner				; If player 1 wins
+
+	L5:
+		Call m_press			; iterates until m is pressed
+		INVOKE Check_ladder_or_snake, ADDR Player1
+
+	L6: Call ladder_printer		; Printing Ladder
+
+	Mov DH, 15
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET P2_turn		
+	Call WriteString			; Prints P2_turn statment
+
+	Mov Eax, 0
+	L11:
+		Call ReadChar
+		CMP AX, 0B30h
+		JE L22
+	Loop L11					; iterates until 0 is pressed
+
+	L22: Call Random_number		; Returns Random Number(steps)
+
+	Mov DH, 16
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET Step		
+	Call WriteString			
+	Call WriteDec				; Prints Step statment
+
+	Add Player2, Eax			; Adding steps in player2
+	Mov Ebx, Eax				; Saving for further use
+
+	CMP Player2, 48
+	JA L33
+	JE L44
+	JB L55
+
+	L33:						; If steps are more then winning score(48)
+		Mov DH, 19
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET Exact_steps		
+		Call WriteString		; Prints Exact_steps statment
+		Sub Player2, Ebx
+
+		Mov DH, 20
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET System_Pause		
+		Call WriteString		; Prints Pause statment
+		Call ReadChar
+		JMP L66					
+
+	L44:
+		Call m_press
+		Call Ladder_printer
+		Mov DH, 19
+		Mov DL, 1
+		Call Gotoxy
+		Mov Edx, OFFSET P2_win		
+		Call WriteString		; Prints P2_win statment
+		Call ReadChar
+		JMP Winner				; If player 2 wins
+
+	L55:
+		Call m_press			; iterates until m is pressed
+		INVOKE Check_ladder_or_snake, ADDR Player2
+
+	L66:
+		Call Snakes_and_ladder	; Recursive function
+
+	Winner:
+		Mov Player1, 1			
+		Mov Player2, 1			; Reseting player scores
+RET
+Snakes_and_ladder ENDP
+
+;******************************* Checks for snakes & ladder *******************************
+Check_ladder_or_snake PROC, Player_pointer:PTR DWORD
+	Mov ESI, Player_pointer
+	Mov Ebx, [ESI]
+
+	CMP Ebx, 12
+	JE S1
+	CMP Ebx, 35
+	JE S2
+	CMP Ebx, 43
+	JE S3
+	CMP Ebx, 9
+	JE L1
+	CMP Ebx, 33
+	JE L2
+	JMP _end_
+
+	S1:	Mov Ebx, 2
+		Call snake_found
+		JMP _end_
+
+	S2:	Mov Ebx, 22
+		Call snake_found
+		JMP _end_
+
+	S3:	Mov Ebx, 32
+		Call snake_found
+		JMP _end_
+
+	L1: Mov Ebx, 20
+		Call ladder_found
+		JMP _end_
+
+	L2: Mov Ebx, 46
+		Call ladder_found
+
+	_end_:
+		Mov [ESI], Ebx
+RET
+Check_ladder_or_snake ENDP
+
+;******************************* Prints Snake statement *******************************
+snake_found PROC
+	Call ladder_printer
+	Mov DH, 18
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET Snake		
+	Call WriteString
+	Call readchar
+RET
+snake_found ENDP
+
+;******************************* Prints Ladder statement *******************************
+ladder_found PROC
+	Call ladder_printer
+	Mov DH, 18
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET ladder		
+	Call WriteString
+	Call readchar
+RET
+ladder_found ENDP
+
+;******************************* Generates Random Number *******************************
+Random_number PROC
+	Call Randomize
+	Mov Eax, 7
+	Call RandomRange
+
+	CMP EAX, 0
+	JE L1
+	JMP L2
+
+	L1: Mov Eax, 2
+	L2:
+RET
+Random_number ENDP
+
+;******************************* Pauses Screen until 'm' is pressed *******************************
+m_press PROC
+	Mov DH, 17
+	Mov DL, 1
+	Call Gotoxy
+	Mov Edx, OFFSET Move		
+	Call WriteString		; Prints Move statment
+
+	Mov Eax, 0
+	L7:
+		Call ReadChar
+		CMP AX, 326Dh
+		JE L6
+	Loop L7
+	L6:
+RET
+m_press ENDP
+
+;******************************* Prints P1 on Board *******************************
+Gotoxy_P1 PROC
+	Call Gotoxy
+	Mov Edx, OFFSET P1
+	Call WriteString
+RET
+Gotoxy_P1 ENDP
+
+;******************************* Prints P2 on Board *******************************
+Gotoxy_P2 PROC
+	Mov Eax, Player1
+	CMP Player2, Eax
+	JNE L1
+	INC DH
+L1: Call Gotoxy
+	Mov Edx, OFFSET P2
+	Call WriteString
+RET
+Gotoxy_P2 ENDP
+
+;******************************* Prints Board and score *******************************
+ladder_printer PROC
+	Mov DH, 0;row
+	Mov DL, 1;colomn
+	Call Gotoxy
+
+	Mov Edx, OFFSET ladder_Board	
+	Call WriteString				;Printing Board
+
+	Mov DH, 5;row
+	Mov DL, 17;colomn
+	Call Gotoxy
+	Mov Eax, Player1
+	Call writeDec					; Printing Player1 Score
+
+	Mov DH, 7;row
+	Mov DL, 17;colomn
+	Call Gotoxy
+	Mov Eax, Player2
+	Call writeDec					; Printing Player2 Score
+
+	INVOKE Player_position, Player1
+	Call Gotoxy_P1					; Printing P1 score
+
+	INVOKE Player_position, Player2
+	Call Gotoxy_P2					; Printing P1 score
+RET
+ladder_printer ENDP
+
+;******************************* Places player cursor on board with respect to its points *******************************
+Player_position PROC, Player_pointer:DWORD
+	CMP Player_pointer, 1		
+	JE L1
+	CMP Player_pointer, 2		
+	JE L2
+	CMP Player_pointer, 3
+	JE L3
+	CMP Player_pointer, 4
+	JE L4
+	CMP Player_pointer, 5
+	JE L5
+	CMP Player_pointer, 6
+	JE L6
+	CMP Player_pointer, 7
+	JE L7
+	CMP Player_pointer, 8
+	JE L8
+	CMP Player_pointer, 9
+	JE L9
+	CMP Player_pointer, 10
+	JE L10
+	CMP Player_pointer, 11
+	JE L11
+	CMP Player_pointer, 12
+	JE L12
+	CMP Player_pointer, 13
+	JE L13
+	CMP Player_pointer, 14
+	JE L14
+	CMP Player_pointer, 15
+	JE L15
+	CMP Player_pointer, 16
+	JE L16
+	CMP Player_pointer, 16
+	JE L16
+	CMP Player_pointer, 17
+	JE L17
+	CMP Player_pointer, 18
+	JE L18
+	CMP Player_pointer, 19
+	JE L19
+	CMP Player_pointer, 20
+	JE L20
+	CMP Player_pointer, 21
+	JE L21
+	CMP Player_pointer, 22
+	JE L22
+	CMP Player_pointer, 23
+	JE L23
+	CMP Player_pointer, 24
+	JE L24
+	CMP Player_pointer, 25
+	JE L25
+	CMP Player_pointer, 26
+	JE L26
+	CMP Player_pointer, 27
+	JE L27
+	CMP Player_pointer, 28
+	JE L28
+	CMP Player_pointer, 29
+	JE L29
+	CMP Player_pointer, 30
+	JE L30
+	CMP Player_pointer, 31
+	JE L31
+	CMP Player_pointer, 32
+	JE L32
+	CMP Player_pointer, 33
+	JE L33
+	CMP Player_pointer, 34
+	JE L34
+	CMP Player_pointer, 35
+	JE L35
+	CMP Player_pointer, 36
+	JE L36
+	CMP Player_pointer, 37
+	JE L37
+	CMP Player_pointer, 38
+	JE L38
+	CMP Player_pointer, 39
+	JE L39
+	CMP Player_pointer, 40
+	JE L40
+	CMP Player_pointer, 41
+	JE L41
+	CMP Player_pointer, 42
+	JE L42
+	CMP Player_pointer, 43
+	JE L43
+	CMP Player_pointer, 44
+	JE L44
+	CMP Player_pointer, 45
+	JE L45
+	CMP Player_pointer, 46
+	JE L46
+	CMP Player_pointer, 47
+	JE L47
+	CMP Player_pointer, 48
+	JE L48
+
+	L1:
+		Mov DH, 33
+		Mov DL, 60
+		JMP _End_
+	
+	L2:
+		Mov DH, 33
+		Mov DL, 70
+		JMP _End_
+
+	L3:
+		Mov DH, 33 
+		Mov DL, 80
+		JMP _End_
+
+	L4:
+		Mov DH, 33
+		Mov DL, 90
+		JMP _End_
+
+	L5:
+		Mov DH, 33
+		Mov DL, 100
+		JMP _End_
+
+	L6:
+		Mov DH, 33
+		Mov DL, 110
+		JMP _End_
+
+	L7:
+		Mov DH, 29
+		Mov DL, 110
+		JMP _End_
+
+	L8:
+		Mov DH, 29
+		Mov DL, 100
+		JMP _End_
+
+	L9:
+		Mov DH, 29
+		Mov DL, 90
+		JMP _End_
+
+	L10:
+		Mov DH, 29
+		Mov DL, 80
+		JMP _End_
+
+	L11:
+		Mov DH, 29
+		Mov DL, 70
+		JMP _End_
+
+	L12:
+		Mov DH, 29
+		Mov DL, 60
+		JMP _End_
+
+	L13:
+		Mov DH, 25
+		Mov DL, 60
+		JMP _End_
+
+	L14:
+		Mov DH, 25
+		Mov DL, 70
+		JMP _End_
+
+	L15:
+		Mov DH, 25
+		Mov DL, 80
+		JMP _End_
+
+	L16:
+		Mov DH, 25
+		Mov DL, 90
+		JMP _End_
+
+	L17:
+		Mov DH, 25
+		Mov DL, 100
+		JMP _End_
+
+	L18:
+		Mov DH, 25
+		Mov DL, 110
+		JMP _End_
+
+	L19:
+		Mov DH, 21
+		Mov DL, 110
+		JMP _End_
+
+	L20:
+		Mov DH, 21
+		Mov DL, 100
+		JMP _End_
+
+	L21:
+		Mov DH, 21
+		Mov DL, 90
+		JMP _End_
+
+	L22:
+		Mov DH, 21
+		Mov DL, 80
+		JMP _End_
+
+	L23:
+		Mov DH, 21
+		Mov DL, 70
+		JMP _End_
+
+	L24:
+		Mov DH, 21
+		Mov DL, 60
+		JMP _End_
+
+	L25:
+		Mov DH, 17
+		Mov DL, 60
+		JMP _End_
+
+	L26:
+		Mov DH, 17
+		Mov DL, 70
+		JMP _End_
+
+	L27:
+		Mov DH, 17
+		Mov DL, 80
+		JMP _End_
+
+	L28:
+		Mov DH, 17
+		Mov DL, 90
+		JMP _End_
+
+	L29:
+		Mov DH, 17
+		Mov DL, 100
+		JMP _End_
+
+	L30:
+		Mov DH, 17
+		Mov DL, 110
+		JMP _End_
+
+	L31:
+		Mov DH, 13
+		Mov DL, 110
+		JMP _End_
+
+	L32:
+		Mov DH, 13
+		Mov DL, 100
+		JMP _End_
+
+	L33:
+		Mov DH, 13
+		Mov DL, 90
+		JMP _End_
+
+	L34:
+		Mov DH, 13
+		Mov DL, 80
+		JMP _End_
+
+	L35:
+		Mov DH, 13
+		Mov DL, 70
+		JMP _End_
+
+	L36:
+		Mov DH, 13
+		Mov DL, 60
+		JMP _End_
+
+	L37:
+		Mov DH, 9
+		Mov DL, 60
+		JMP _End_
+
+	L38:
+		Mov DH, 9
+		Mov DL, 70
+		JMP _End_
+
+	L39:
+		Mov DH, 9
+		Mov DL, 80
+		JMP _End_
+
+	L40:
+		Mov DH, 9
+		Mov DL, 90
+		JMP _End_
+
+	L41:
+		Mov DH, 9
+		Mov DL, 100
+		JMP _End_
+
+	L42:
+		Mov DH, 9
+		Mov DL, 110
+		JMP _End_
+
+	L43:
+		Mov DH, 5
+		Mov DL, 110
+		JMP _End_
+
+	L44:
+		Mov DH, 5
+		Mov DL, 100
+		JMP _End_
+
+	L45:
+		Mov DH, 5
+		Mov DL, 90
+		JMP _End_
+
+	L46:
+		Mov DH, 5
+		Mov DL, 80
+		JMP _End_
+
+	L47:
+		Mov DH, 5
+		Mov DL, 70
+		JMP _End_
+
+	L48:
+		Mov DH, 5
+		Mov DL, 60
+		JMP _End_
+
+	_End_:
+RET
+Player_position ENDP
+
+
+;********************************** BOARD PROC ***********************************
+board proc
+	mov dl, 0
+	mov dh, 19
+	call gotoxy
+	mov edx,OFFSET Space
+	call writestring
+	Call crlf
+	call writestring
+
+	mov X, 55
+	mov Y, 5
+	mov dl, X
+	mov dh, Y
+	call gotoxy
+	mov edx,offset msg1
+	call writestring
+	call crlf
+	sub X, 5
+	inc Y
+	mov dl, X
+	mov dh, Y
+	call gotoxy
+	mov edx,offset msg2
+	call writestring
+	call crlf
+	mov esi,offset square
+	mov ecx,3
+	add X, 7
+	add Y, 3
+	mov dl, X
+	mov dh, Y
+	call gotoxy
+	mov edx,offset line3
+	call writestring
+	call crlf
+	lable1:
+	inc Y
+	mov dl, X
+	mov dh, Y
+	call gotoxy
+	mov edx,offset line1
+	call writestring
+	mov eax,[esi]
+	call writechar
+	add esi,type square
+	push ecx
+	mov ecx,2
+	lable2:
+	mov edx,offset line1
+	call writestring
+	mov eax,[esi]
+	call writechar
+	add esi,type square
+	loop lable2
+	mov edx,offset line1
+	call writestring
+	call crlf
+	inc Y
+	mov dl, X
+	mov dh, Y
+	call gotoxy
+	mov edx, offset line2
+	call writestring
+	call crlf
+	pop ecx
+	dec ecx
+	cmp ecx, 0
+	ja lable1
+	call crlf
+	call crlf
+	call crlf
+ret
+board endp
+;**********************************BOARD PROC END***********************************
+
+
+;**********************************Winner PROC***********************************
+winner proc
+	enter 0, 0
+	lable1:
+		mov esi, [ebp+12]
+		mov edi, [ebp+8]
+
+		mov eax,[esi]
+		mov ebx,[esi+4]
+		mov ecx,[esi+8]
+		cmp eax,ebx
+		jne lable3
+		cmp ebx,ecx
+		jne lable3
+		mov check,1
+		jmp return
+
+	lable3:
+		mov eax,[esi+12]
+		mov ebx,[esi+16]
+		mov ecx,[esi+20]
+		cmp eax,ebx
+		jne lable4
+		cmp ebx,ecx
+		jne lable4
+		mov check,1
+		jmp return
+
+	lable4:
+		mov eax,[esi+24]
+		mov ebx,[esi+28]
+		mov ecx,[esi+32]
+		cmp eax,ebx
+		jne lable5
+		cmp ebx,ecx
+		jne lable5
+		mov check,1
+		jmp return
+
+	lable5:
+		mov eax,[esi]
+		mov ebx,[esi+12]
+		mov ecx,[esi+24]
+		cmp eax,ebx
+		jne lable6
+		cmp ebx,ecx
+		jne lable6
+		mov check,1
+		jmp return
+
+	lable6:
+		mov eax,[esi+4]
+		mov ebx,[esi+16]
+		mov ecx,[esi+28]
+		cmp eax,ebx
+		jne lable7
+		cmp ebx,ecx
+		jne lable7
+		mov check,1
+		jmp return
+
+	lable7:
+		mov eax,[esi+8]
+		mov ebx,[esi+20]
+		mov ecx,[esi+32]
+		cmp eax,ebx
+		jne lable8
+		cmp ebx,ecx
+		jne lable8
+		mov check,1
+		jmp return
+
+	lable8:
+		mov eax,[esi]
+		mov ebx,[esi+16]
+		mov ecx,[esi+32]
+		cmp eax,ebx
+		jne lable9
+		cmp ebx,ecx
+		jne lable9
+		mov check,1
+		jmp return
+
+	lable9:
+		mov eax,[esi+8]
+		mov ebx,[esi+16]
+		mov ecx,[esi+24]
+		cmp eax,ebx
+		jne lable10
+		cmp ebx,ecx
+		jne lable10
+		mov check,1
+		jmp return
+
+	lable10:
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		add esi,type square
+		add edi,type square2
+		mov eax,[edi]
+		cmp [esi],eax
+		je lable11
+		mov check,0
+		jmp return
+
+	lable11 :
+		mov check,-1
+
+	return:
+		leave
+
+ret 8
+winner endp
+;**********************************Winner PROC END***********************************
+
+
+
+;**********************************TICTACTOE PROC ***************************************
+TICTACTOE proc
+	enter 0,0
+	Call Clrscr
+	do:
+		Mov DH, 0;row
+		Mov DL, 1;colomn			printing board; 
+		Call Gotoxy
+		invoke board
+
+		mov edx,0
+		mov eax,player
+		mov ebx,2
+		div ebx
+
+		cmp edx,1
+		je _1player_
+
+		mov player,2
+		jmp go
+
+		_1player_:
+		mov player,1
+
+	go:
+		mov edx,offset msg3
+		call writestring
+
+		mov eax,player
+		call writedec
+
+		mov edx,offset msg4
+		call writestring
+		call readdec		; Taking input
+		mov choice,eax
+
+		mov eax,player
+		cmp eax,1
+		jne notequal
+
+		mov eax,A
+		mov mark,eax
+		jmp label1
+
+	notequal:
+		mov eax,B
+		mov mark,eax
+
+	label1:
+		mov eax,choice
+		mov ebx,1
+		mov esi,offset square
+		mov edi,offset square2
+		mov ecx,lengthof square
+
+	lable2:
+		push ecx
+		cmp eax,ebx
+		je lable3
+		jmp lable4
+
+	lable3:
+		Pop Ecx
+		mov eax, [esi]
+		cmp eax, [edi]
+		jne lable5
+		mov eax,mark
+		mov [esi],eax
+		jmp lable6
+
+	lable4:
+		pop ecx
+		inc ebx
+		add esi,type square
+		add edi,type square2
+		loop lable2
+
+	lable5:
+		dec player
+
+		mov edx,offset prompt1
+		call writestring
+		call readchar
+		call BOARD
+
+	lable6:
+		push offset square
+		push offset square2
+		invoke winner
+
+		inc player
+		mov eax,check
+		mov ebx,-1
+		cmp eax,ebx
+		je do
+
+		Mov DH, 0;row
+		Mov DL, 1;colomn
+		Call Gotoxy
+		invoke board
+
+		mov eax,check
+		cmp eax,1
+		je _wins_
+
+		mov edx, offset prompt3
+		call writestring
+		call crlf
+		jmp ex
+
+	_wins_:
+		mov edx,offset msg3
+		call writestring
+		dec player
+		mov eax,player
+		call writedec
+		mov edx,offset prompt2
+		call writestring
+		call crlf
+
+	ex:
+		Mov Player, 1
+
+		cld
+		Mov Ecx, LENGTHOF Square
+		Mov Edi, OFFSET Square
+		Mov Esi, OFFSET Square2
+		REP MOVSD
+
+		leave
+ret
+TICTACTOE endp
+;**********************************TICTACTOE PROC END*****************************************
+
+
+;{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{   Hangman Procedure (start)      }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+Hangman_Game Proc 
+pushad
+cmp eax,7
+je L2
+color=0+(11*16)
+color1=7+(0*16)
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Setting Text Color ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mov eax,color1
+call settextcolor
+call loading
+mov eax,color
+call settextcolor
+    mov ecx,15
+    l1:
+        
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Randomly Selection of Words ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        call Randomize
+        mov eax,15
+        call randomRange
+        inc eax
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Check Proc Checks if Randomize function returns the number which was Used Previously  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        call repeatcheck
+        cmp eax,20
+        je l1
+        call play
+        
+    loop l1
+    call crlf
+    call Advice
+	L2:
+	call crlf
+Popad
+Mov TotalScore, 0
+call resetdata
+Hangman_game Endp
+;{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{   Hangman Procedure (end)      }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ To Check any Repeated word ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+repeatcheck proc
+push ecx
+mov esi,0
+mov ecx, 15
+ll:
+cmp [doneNum+esi*type doneNum],0
+jne check2
+
+mov [doneNum+esi*type doneNum],eax
+jmp endloop
+
+
+check2:
+cmp [doneNum+esi*type doneNum],eax
+je exitloop
+
+inc esi
+
+loop ll
+
+exitloop:
+mov eax,20
+
+endloop:
+pop ecx
+ret
+repeatcheck endp
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Searching Hint and word From Array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Play Proc
+pushad
+push eax
+mov esi,0
+
+search:
+cmp al,[message+esi]
+je found
+inc esi
+jmp search
+
+found:
+inc esi
+
+mov edi,offset temphint
+L1:
+movzx eax,[message+esi]
+mov [edi],al
+inc esi
+cmp eax , 0
+je endloop
+inc edi
+jmp l1
+endloop:
+call crlf
+
+pop eax
+mov esi,0
+searchword:
+cmp al,[Answers+esi]
+je foundW
+inc esi
+jmp searchword
+
+foundW:
+inc esi
+
+mov edi,0
+L2:
+movzx eax,[answers+esi]
+mov [tempword+edi],al
+mov [tempwordd+edi],al
+inc esi
+cmp eax , 0
+je endloopp
+
+inc edi
+jmp l2
+endloopp:
+call crlf
+
+Call Hangman
+popad
+ret
+play endp
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Logic Of Hangman ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hangman proc
+pushad
+mov ecx,5
+mov lives,cl
+mov edi,0
+mov ebx,'-'
+lengthofword:
+cmp [tempword+edi],0
+je ll1
+mov [temparr+edi],bl
+inc edi
+jmp lengthofword
+
+ll1:
+mov ebx,edi
+mov wordlength,bl
+
+movzx ecx , lives
+	call clrscr
+	mov dh,0
+	mov dl,15
+	call gotoxy
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Printing the Title message~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	mov edx,offset Titlee
+	call writestring
+	call crlf
+	call crlf
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Printing no. of lives left ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	mov edx,offset messagelives
+	call writestring
+	movzx eax,lives
+	call writeint
+	
+	call crlf
+	call crlf
+l1:
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Printing Hint ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	mov edx,offset hintword
+	call writestring
+	mov edx, offset temphint
+	call writestring 
+	call crlf
+	call crlf
+	mov edx,offset wordword
+	call writestring
+	mov edx, offset temparr
+	call writestring
+	call crlf
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Printing Used Words ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	call crlf
+	mov edx,offset usedAlphabets
+	call writestring
+	mov esi,0
+	showUsedwords :
+	cmp [repeatedEntries+esi],0
+	je Usewords
+	mov al,[repeatedEntries+esi]
+	call writechar
+	mov al,','
+	call writechar
+	inc esi 
+	jmp ShowUsedwords
+	usewords:
+	call crlf
+	call skeleton
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Checking Pressed Letters, They Must be from 'A' to 'Z' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+repeatation:
+call readchar
+mov ebx,eax
+mov esi,0
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Capitalize the Pressed Alphabet ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+And al,11011111b
+CheckRepeatation:
+cmp al,'A'
+jb repeatation
+cmp al,'Z'
+ja repeatation
+cmp [repeatedEntries+esi],0
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Check if the same letter is pressed Second time (than again read)  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+je Notrepeat
+cmp [repeatedEntries+esi],al
+je repeatation
+inc esi
+jmp CheckRepeatation
+Notrepeat:
+mov [repeatedEntries+esi],al
+	mov dh,1
+	mov dl,0
+	call gotoxy
+
+	mov esi,0
+	movzx ecx, wordlength
+	mov ebx, 0
+	mov flag , bl
+	l2:
+	cmp al, [tempword+esi]
+	jne again
+
+		found:
+		push eax
+		mov eax, 1
+		mov flag,al
+		movzx eax, [tempword+esi]
+		mov [temparr+esi],al
+		pop eax
+		mov [tempword+esi],'!'
+		;;;;;;;;;;;;;;;;;;;;;;;;found;;;;;;;;;;;;;;;;;;;;;;;;
+		push esi
+		push ecx
+		mov ecx,0
+		mov count, cl
+		movzx ecx, wordlength
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ If any letter found then replace it with '!', so its wouldn't check Next time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		mov esi , offset tempword
+		mov ebx, '!'
+		checkk :
+		cmp [esi],bl
+		je qwer
+		inc count
+		qwer:
+		inc esi
+		loop checkk
+		pop ecx
+		pop esi
+		cmp count,0
+		je winn
+
+
+	again:
+	inc esi
+	loop l2
+	cmp flag, 1
+	je L3
+
+		Notfound:
+		dec lives
+		;;;;;;;;;;;not found;;;;;;;;;;;
+
+															
+	l3:
+
+	call crlf
+
+	cmp lives,0
+	je gameoverr
+
+	movzx eax, lives
+	mov edx,offset messagelives
+	call writestring
+	call writeint 
+	call crlf 
+	call crlf
+
+	jmp l1
+	;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ User Find the Correct word ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	winn :
+	mov edx, offset win
+	push edx
+	call clrscr
+	mov dh,0
+	mov dl,15
+	call gotoxy
+	mov edx,offset Titlee
+	call writestring
+	call crlf
+	call crlf
+	pop edx
+	jmp endgame
+	;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ User lost all his lives ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	gameoverr:
+	call clrscr
+	mov dh,0
+	mov dl,15
+	call gotoxy
+	mov edx,offset Titlee
+	call writestring
+	call crlf
+	call crlf
+	mov edx,offset correctword
+	call writestring
+	mov edx,offset tempwordd
+	call writestring
+	mov edx,offset gameover
+	call crlf
+	call crlf
+
+	endgame:
+	push edx
+	mov dh,4
+	mov dl,0
+	call gotoxy
+	pop edx
+	call writestring
+	call crlf
+	cmp lives,0
+	jne skip
+	call Skeleton
+	call crlf
+	call crlf
+	call crlf
+	skip:
+	movzx eax,lives
+	mov edx,offset currentPoints
+	call writestring
+	call writeint
+	call crlf
+	call crlf
+	mov edx, offset scoree
+	call writestring
+	mov eax,TotalScore
+	add al,lives
+	mov TotalScore,eax
+
+	call writedec 
+	;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Play Again or not ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	mov edx ,offset PlayAgain
+	mov ebx, offset Titlee
+	call MsgBoxAsk
+
+	cmp eax,7
+	jne continue
+	
+	Mov TotalScore, 0
+	call resetdata
+	call main
+	continue:
+	call clrscr
+
+	call resetdata
+popad
+ret 
+Hangman endp
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Printing Skeleton Shape ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+skeleton PROC
+pushad 
+
+cmp lives,5
+je L5
+cmp lives,4
+je L4
+cmp lives,3
+je L3
+cmp lives,2
+je L2
+cmp lives,1
+je L1
+
+mov edx,offset live0
+jmp drawskeleton
+
+
+l5:
+mov edx,offset live5
+jmp drawskeleton
+L4 :
+mov edx,offset live4
+jmp drawskeleton
+L3 :
+mov edx,offset live3
+jmp drawskeleton
+L2 :
+mov edx,offset live2
+jmp drawskeleton
+L1 :
+mov edx,offset live1
+
+
+drawskeleton:
+call writestring
+
+popad
+ret 
+skeleton endp
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Reset all variable values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+resetdata Proc
+pushad 
+mov eax,0
+mov esi,0
+mov ecx,15
+l1:
+mov [done+esi],al
+inc esi
+loop l1
+
+mov esi,0
+mov ecx,20
+l2:
+mov [tempword+esi],al
+mov [tempwordd+esi],al
+mov [temparr+esi],al 
+mov [repeatedEntries+esi],al
+inc esi
+loop l2
+
+mov esi,0
+mov ecx,100
+l3:
+mov [temphint+esi],al
+inc esi
+loop l3
+
+mov count,al
+mov flag, al
+
+
+
+popad
+ret
+resetdata endp
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Procedure to Give Outcomes of the Game ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Advice Proc 
+cmp TotalScore,60
+jae L1
+cmp TotalScore,25
+jbe L2
+
+mov edx, offset AtLast2
+jmp printmessage
+L1:
+mov edx,offset AtLast1
+jmp printmessage
+L2:
+mov edx, offset AtLast
+
+printmessage : 
+call writestring
+call crlf
+call crlf
+call waitmsg
+
+ret
+Advice Endp
+
+
+;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Procedure to Show loading of Hangman~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+loading Proc
+Call Clrscr
+mov dh,12
+mov dl,35
+call gotoxy
+mov edx,offset loadingg
+call writestring
+mov ecx,3
+l1:
+
+mov dh,14
+mov dl,42
+call gotoxy
+push ecx
+mov ecx,17
+l2:
+mov eax,25
+call delay
+mov eax,'.'
+call writechar 
+mov eax,' '
+call writechar 
+loop l2
+mov ecx,34
+mov dh,14
+mov dl,42
+call gotoxy
+l3:
+mov eax,25
+call delay
+mov eax,' '
+call writechar 
+loop l3
+pop ecx
+loop l1
+
+ret 
+loading endp
+
+
+Print Macro S1
+mov edx,offset S1
+call writestring
+endm
+
+End Main
